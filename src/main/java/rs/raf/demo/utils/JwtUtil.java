@@ -1,5 +1,6 @@
 package rs.raf.demo.utils;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,7 +13,10 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "MY JWT SECRET";
+
+    Dotenv dotenv = Dotenv.load();
+
+    private final String SECRET_KEY = dotenv.get("JWT_SECRET");
 
     public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
