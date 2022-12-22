@@ -38,16 +38,16 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponse(jwtUtil.generateToken(
                 loginRequest.getUsername(),
-                loggedInUser.getPerm_read(),
-                loggedInUser.getPerm_create(),
-                loggedInUser.getPerm_update(),
-                loggedInUser.getPerm_delete(),
-                loggedInUser.getPerm_mach_create(),
-                loggedInUser.getPerm_mach_destroy(),
-                loggedInUser.getPerm_mach_start(),
-                loggedInUser.getPerm_mach_stop(),
-                loggedInUser.getPerm_mach_restart(),
-                loggedInUser.getPerm_mach_search()
+                loggedInUser.getP_create(),
+                loggedInUser.getP_read(),
+                loggedInUser.getP_update(),
+                loggedInUser.getP_delete(),
+                loggedInUser.getPm_create(),
+                loggedInUser.getPm_destroy(),
+                loggedInUser.getPm_start(),
+                loggedInUser.getPm_stop(),
+                loggedInUser.getPm_restart(),
+                loggedInUser.getPm_search()
         )));
     }
 }

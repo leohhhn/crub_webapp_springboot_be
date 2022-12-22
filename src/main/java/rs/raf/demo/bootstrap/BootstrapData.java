@@ -29,7 +29,7 @@ public class BootstrapData implements CommandLineRunner {
             String t = "user".concat(String.valueOf(i));
             user.setUsername(t);
             user.setPassword(this.passwordEncoder.encode(t));
-            user.setPerm_read(1);
+            user.setP_read(1);
             user.setEmail(t.concat("@gmail.com"));
             this.userRepository.save(user);
         }
@@ -37,26 +37,26 @@ public class BootstrapData implements CommandLineRunner {
         User admin = new User();
         admin.setUsername("admin");
         admin.setPassword(this.passwordEncoder.encode("admin"));
-        admin.setPerm_delete(1);
-        admin.setPerm_update(1);
-        admin.setPerm_create(1);
-        admin.setPerm_read(1);
-        admin.setPerm_mach_create(1);
-        admin.setPerm_mach_destroy(1);
-        admin.setPerm_mach_start(1);
-        admin.setPerm_mach_stop(1);
-        admin.setPerm_mach_restart(1);
-        admin.setPerm_mach_search(1);
+        admin.setP_delete(1);
+        admin.setP_update(1);
+        admin.setP_create(1);
+        admin.setP_read(1);
+        admin.setPm_create(1);
+        admin.setPm_destroy(1);
+        admin.setPm_start(1);
+        admin.setPm_stop(1);
+        admin.setPm_restart(1);
+        admin.setPm_search(1);
         admin.setEmail("admin@gmail.com");
         this.userRepository.save(admin);
 
         User mod = new User();
         mod.setUsername("mod");
         mod.setPassword(this.passwordEncoder.encode("mod"));
-        mod.setPerm_delete(1);
-        mod.setPerm_update(0);
-        mod.setPerm_create(1);
-        mod.setPerm_read(1);
+        mod.setP_delete(1);
+        mod.setP_update(0);
+        mod.setP_create(1);
+        mod.setP_read(1);
         mod.setEmail("mod@gmail.com");
         this.userRepository.save(mod);
 

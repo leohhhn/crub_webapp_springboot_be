@@ -36,8 +36,8 @@ public class JwtUtil {
                                 Integer pmr, Integer pmsearch) {
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("p_read", pc);
         claims.put("p_create", pr);
+        claims.put("p_read", pc);
         claims.put("p_update", pu);
         claims.put("p_delete", pd);
 

@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import rs.raf.demo.DTO.UserDTO;
 import rs.raf.demo.model.User;
@@ -63,9 +62,9 @@ public class UserController {
             if (u == null) return new ResponseEntity<>("User with specified ID does not exist", HttpStatus.BAD_REQUEST);
 
             u.setEmail(dto.getEmail());
-            u.setPerm_create(dto.getPerm_create());
-            u.setPerm_update(dto.getPerm_update());
-            u.setPerm_delete(dto.getPerm_delete());
+            u.setP_create(dto.getP_create());
+            u.setP_update(dto.getP_update());
+            u.setP_delete(dto.getP_delete());
             u.setUsername(dto.getUsername());
 
             this.userService.update(u);
