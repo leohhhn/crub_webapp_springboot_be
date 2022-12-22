@@ -84,6 +84,8 @@ public class UserController {
 
         try {
             if (perm.get("p_delete").equals(0)) return ResponseEntity.status(403).build();
+            System.out.println("USER WHO SENT DELETE REQUEST: ".concat(jwtUtil.extractUsername(jwt)));
+
             if (jwtUtil.extractUsername(jwt).equals(dto.getUsername()))
                 return new ResponseEntity<>("Cannot remove yourself!", HttpStatus.BAD_REQUEST);
 

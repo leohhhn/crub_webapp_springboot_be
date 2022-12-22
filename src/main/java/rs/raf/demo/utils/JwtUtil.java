@@ -30,12 +30,23 @@ public class JwtUtil {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String generateToken(String username, Integer pc, Integer pr, Integer pu, Integer pd) {
+    public String generateToken(String username,
+                                Integer pc, Integer pr, Integer pu, Integer pd,
+                                Integer pmc, Integer pmd, Integer pmstart, Integer pmstop,
+                                Integer pmr, Integer pmsearch) {
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("p_read", pc);
         claims.put("p_create", pr);
         claims.put("p_update", pu);
         claims.put("p_delete", pd);
+
+        claims.put("pm_create", pmc);
+        claims.put("pm_destroy", pmd);
+        claims.put("pm_start", pmstart);
+        claims.put("pm_stop", pmstop);
+        claims.put("pm_restart", pmr);
+        claims.put("pm_search", pmsearch);
 
         return Jwts.builder()
                 .setClaims(claims)

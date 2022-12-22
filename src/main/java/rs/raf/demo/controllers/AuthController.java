@@ -41,7 +41,13 @@ public class AuthController {
                 loggedInUser.getPerm_read(),
                 loggedInUser.getPerm_create(),
                 loggedInUser.getPerm_update(),
-                loggedInUser.getPerm_delete()
+                loggedInUser.getPerm_delete(),
+                loggedInUser.getPerm_mach_create(),
+                loggedInUser.getPerm_mach_destroy(),
+                loggedInUser.getPerm_mach_start(),
+                loggedInUser.getPerm_mach_stop(),
+                loggedInUser.getPerm_mach_restart(),
+                loggedInUser.getPerm_mach_search()
         )));
     }
 }
