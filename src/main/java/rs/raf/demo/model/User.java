@@ -32,17 +32,19 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    private Integer p_create = 0;
+
+    @Column(nullable = false)
     @ColumnDefault(value = "1")
     private Integer p_read = 1;
+
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private Integer p_update = 0;
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private Integer p_delete = 0;
-    @Column(nullable = false)
-    @ColumnDefault(value = "0")
-    private Integer p_create = 0;
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
@@ -62,7 +64,6 @@ public class User {
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private Integer pm_search = 0;
-
 
     // GETTERS & SETTERS
     public Integer getPm_create() {
