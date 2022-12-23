@@ -1,17 +1,17 @@
 package rs.raf.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
 public class User {
 
     @Id
@@ -65,9 +65,21 @@ public class User {
     @ColumnDefault(value = "0")
     private Integer pm_search = 0;
 
+    @OneToMany(mappedBy = "createdBy")
+    @JsonIgnore
+    List<Machine> machineList = new ArrayList<>();
+
     // GETTERS & SETTERS
     public Integer getPm_create() {
         return pm_create;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public void setPm_create(Integer perm_mach_create) {
@@ -100,6 +112,26 @@ public class User {
 
     public Integer getPm_restart() {
         return pm_restart;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Machine> getMachineList() {
+        return machineList;
     }
 
     public void setPm_restart(Integer perm_mach_restart) {

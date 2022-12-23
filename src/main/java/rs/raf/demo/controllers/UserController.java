@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.raf.demo.DTO.UserDTO;
+import rs.raf.demo.model.Machine;
 import rs.raf.demo.model.User;
 import rs.raf.demo.services.UserService;
 import rs.raf.demo.utils.JwtUtil;
@@ -83,7 +84,6 @@ public class UserController {
 
         try {
             if (perm.get("p_delete").equals(0)) return ResponseEntity.status(403).build();
-            System.out.println("USER WHO SENT DELETE REQUEST: ".concat(jwtUtil.extractUsername(jwt)));
 
             if (jwtUtil.extractUsername(jwt).equals(dto.getUsername()))
                 return new ResponseEntity<>("Cannot remove yourself!", HttpStatus.BAD_REQUEST);
@@ -96,7 +96,21 @@ public class UserController {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("????", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("USER CONTROLLER::DELETE: FAILED", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /// Returns machines that the currently logged in user created
+    /// todo update it to fetch macines by userId requestparam?
+    @GetMapping(value = "/getMachines")
+    public List<Machine> allMachines(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String jwt = auth.split(" ")[1];
+        try {
+            User sender = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
+            return this.userService.getMachines(sender);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

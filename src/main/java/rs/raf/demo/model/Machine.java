@@ -1,36 +1,64 @@
 package rs.raf.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
-//@Entity
+@Entity
 public class Machine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long machineId;
 
-    private MachineStatus status;
+    @Column(nullable = false)
+//    @ColumnDefault(value = "0")
+    private MachineStatus status = MachineStatus.RUNNING;
+    // todo figure out how enums are written in hibernate. ??
 
     @ManyToOne
-    private Long createdBy;
+    @JsonIgnore
+    private User createdBy;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
     boolean active = false;
+    private Long createdById;
 
-    @Column(unique = true)
-    @NotBlank(message = "Username is mandatory")
-    private String username;
+    public Long getCreatedById() {
+        return createdById;
+    }
 
-    @Column
-    @NotBlank(message = "Password is mandatory")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
+    public void setCreatedById(Long createdById) {
+        this.createdById = createdById;
+    }
 
-    @Column(nullable = false, unique = true)
-    @Email
-    private String email;
+    public Long getMachineId() {
+        return machineId;
+    }
+
+    public MachineStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MachineStatus status) {
+        this.status = status;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

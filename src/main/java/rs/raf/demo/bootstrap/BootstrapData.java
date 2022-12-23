@@ -12,27 +12,19 @@ public class BootstrapData implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MachineRepository machineRepository;
 
     @Autowired
-    public BootstrapData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public BootstrapData(UserRepository userRepository, MachineRepository machineRepository, PasswordEncoder passwordEncoder, MachineRepository machineRepository1) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.machineRepository = machineRepository1;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
         System.out.println("Loading Data...");
-
-        for (int i = 1; i < 3; i++) {
-            User user = new User();
-            String t = "user".concat(String.valueOf(i));
-            user.setUsername(t);
-            user.setPassword(this.passwordEncoder.encode(t));
-            user.setP_read(1);
-            user.setEmail(t.concat("@gmail.com"));
-            this.userRepository.save(user);
-        }
 
         User admin = new User();
         admin.setUsername("admin");
@@ -50,6 +42,16 @@ public class BootstrapData implements CommandLineRunner {
         admin.setEmail("admin@gmail.com");
         this.userRepository.save(admin);
 
+        for (int i = 1; i < 3; i++) {
+            User user = new User();
+            String t = "user".concat(String.valueOf(i));
+            user.setUsername(t);
+            user.setPassword(this.passwordEncoder.encode(t));
+            user.setP_read(1);
+            user.setEmail(t.concat("@gmail.com"));
+            this.userRepository.save(user);
+        }
+
         User mod = new User();
         mod.setUsername("mod");
         mod.setPassword(this.passwordEncoder.encode("mod"));
@@ -59,6 +61,15 @@ public class BootstrapData implements CommandLineRunner {
         mod.setP_read(1);
         mod.setEmail("mod@gmail.com");
         this.userRepository.save(mod);
+
+        for (int i = 1; i < 3; i++) {
+            Machine m = new Machine();
+            m.setActive(true);
+            m.setCreatedBy(admin);
+            m.setStatus(MachineStatus.RUNNING);
+            m.setCreatedById(admin.getUserId());
+            this.machineRepository.save(m);
+        }
 
         System.out.println("Data loaded!");
     }
