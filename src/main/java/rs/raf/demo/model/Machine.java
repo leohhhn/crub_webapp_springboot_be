@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Machine {
@@ -13,9 +14,10 @@ public class Machine {
     private Long machineId;
 
     @Column(nullable = false)
-//    @ColumnDefault(value = "0")
+    private String name;
+
+    @Column(nullable = false)
     private MachineStatus status = MachineStatus.RUNNING;
-    // todo figure out how enums are written in hibernate. ??
 
     @ManyToOne
     @JsonIgnore
@@ -24,7 +26,13 @@ public class Machine {
     @Column(nullable = false)
     @ColumnDefault(value = "false")
     boolean active = false;
+
+    @Column(nullable = false)
+    Date createdOn;
+
     private Long createdById;
+
+
 
     public Long getCreatedById() {
         return createdById;
@@ -40,6 +48,14 @@ public class Machine {
 
     public MachineStatus getStatus() {
         return status;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     public void setStatus(MachineStatus status) {
@@ -61,4 +77,13 @@ public class Machine {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

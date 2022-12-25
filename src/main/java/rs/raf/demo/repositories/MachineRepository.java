@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import rs.raf.demo.model.Machine;
 
+import java.util.List;
+
 @Repository
 public interface MachineRepository extends JpaRepository<Machine, Long> {
     public Machine findMachineByMachineId(Long machineId);
-    public Machine findMachinesByCreatedById(Long createdById);
+    public List<Machine> findMachinesByCreatedById(Long createdById);
 }

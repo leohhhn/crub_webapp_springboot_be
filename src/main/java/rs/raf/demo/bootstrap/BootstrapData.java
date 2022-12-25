@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 import rs.raf.demo.model.*;
 import rs.raf.demo.repositories.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
+
 @Component
 public class BootstrapData implements CommandLineRunner {
 
@@ -27,8 +31,8 @@ public class BootstrapData implements CommandLineRunner {
         System.out.println("Loading Data...");
 
         User admin = new User();
-        admin.setUsername("admin");
-        admin.setPassword(this.passwordEncoder.encode("admin"));
+        admin.setUsername("1");
+        admin.setPassword(this.passwordEncoder.encode("1"));
         admin.setP_delete(1);
         admin.setP_update(1);
         admin.setP_create(1);
@@ -39,7 +43,7 @@ public class BootstrapData implements CommandLineRunner {
         admin.setPm_stop(1);
         admin.setPm_restart(1);
         admin.setPm_search(1);
-        admin.setEmail("admin@gmail.com");
+        admin.setEmail("1@gmail.com");
         this.userRepository.save(admin);
 
         for (int i = 1; i < 3; i++) {
@@ -59,13 +63,21 @@ public class BootstrapData implements CommandLineRunner {
         mod.setP_update(0);
         mod.setP_create(1);
         mod.setP_read(1);
+        mod.setPm_create(1);
+        mod.setPm_destroy(1);
+        mod.setPm_start(1);
+        mod.setPm_stop(1);
+        mod.setPm_restart(1);
+        mod.setPm_search(1);
         mod.setEmail("mod@gmail.com");
         this.userRepository.save(mod);
 
         for (int i = 1; i < 3; i++) {
             Machine m = new Machine();
             m.setActive(true);
+            m.setName("mach".concat(String.valueOf(i)));
             m.setCreatedBy(admin);
+            m.setCreatedOn(Date.from(Instant.now()));
             m.setStatus(MachineStatus.RUNNING);
             m.setCreatedById(admin.getUserId());
             this.machineRepository.save(m);

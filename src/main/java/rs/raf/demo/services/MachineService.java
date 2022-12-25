@@ -41,20 +41,7 @@ public class MachineService {
     public Machine findById(Long machineId) {
         return this.machineRepository.findMachineByMachineId(machineId);
     }
-
-//    public User findById(Long machId) {
-//        return this.machineRepository.findByUserId(userId);
-//    }
-//
-//    public User findByEmail(@Email String email) {
-//        return this.userRepository.findByEmail(email);
-//    }
-//
-//    public User findByUsername(String username) {
-//        return this.userRepository.findByUsername(username);
-//    }
-
-    public List<Machine> getAllMachines() {
-        return this.machineRepository.findAll();
+    public List<Machine> getAllMachines(Long userId) {
+        return this.machineRepository.findMachinesByCreatedById(userId);
     }
 }
