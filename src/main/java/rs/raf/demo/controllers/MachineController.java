@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import rs.raf.demo.DTO.MachineDTO;
 import rs.raf.demo.DTO.UserDTO;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/machines")
@@ -45,35 +47,26 @@ public class MachineController {
 
         try {
             if (perm.get("pm_create").equals(0)) return ResponseEntity.status(403).build();
-
             User creator = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
-            Machine m = new Machine();
 
-            m.setActive(true);
-            m.setName(machineDTO.getName());
-            m.setCreatedBy(creator);
-            m.setCreatedOn(Date.from(Instant.now()));
-            m.setStatus(MachineStatus.STOPPED);
-            m.setCreatedById(creator.getUserId());
-
-            this.machineService.create(m);
+            this.machineService.create(machineDTO, creator);
             return ResponseEntity.ok().build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("MACHINE CONTROLLER:: CREATE FAILED", HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping(value = "/destroy")
     public ResponseEntity<?> destroyMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
         Claims perm = jwtUtil.extractAllClaims(jwt);
 
-        System.out.println("RECEIVED DESTROY REQUEST");
         try {
             if (perm.get("pm_destroy").equals(0)) return ResponseEntity.status(403).build();
 
-
-            Machine m = this.machineService.findById(machineDTO.getMachineId()); // get user
+            Machine m = this.machineService.findById(machineDTO.getMachineId());
             if (m == null) return new ResponseEntity<>("Machine doesn't exist", HttpStatus.BAD_REQUEST);
 
             this.machineService.delete(m);
@@ -87,9 +80,44 @@ public class MachineController {
     @GetMapping(value = "/all")
     public List<Machine> all(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
         User sender = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
-
         return this.machineService.getAllMachines(sender.getUserId());
     }
+
+    @PostMapping(value = "startMachine")
+    public ResponseEntity<?> startMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
+        String jwt = auth.split(" ")[1];
+        Claims perm = jwtUtil.extractAllClaims(jwt);
+        if (perm.get("pm_start").equals(0)) return ResponseEntity.status(403).build();
+        // todo add locks
+
+        Machine m = this.machineService.findById(machineDTO.getMachineId());
+        if (m.getStatus() != MachineStatus.STOPPED)
+            return new ResponseEntity<>("MACHINE CONTROLLER::STARTMACHINE: MACHINE ALREADY BOOTING", HttpStatus.BAD_REQUEST);
+
+        this.machineService.startMachine(m);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "stopMachine")
+    public ResponseEntity<?> stopMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
+        String jwt = auth.split(" ")[1];
+        Claims perm = jwtUtil.extractAllClaims(jwt);
+        if (perm.get("pm_stop").equals(0)) return ResponseEntity.status(403).build();
+
+        Machine m = this.machineService.findById(machineDTO.getMachineId());
+        if (m.getStatus() != MachineStatus.RUNNING)
+            return new ResponseEntity<>("MACHINE CONTROLLER::STOPMACHINE: MACHINE ALREADY SHUTTING DOWN", HttpStatus.BAD_REQUEST);
+
+        this.machineService.stopMachine(m);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "restartMachine")
+    public ResponseEntity<?> restartMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
+        // todo implement
+        return null;
+    }
+
+
 }

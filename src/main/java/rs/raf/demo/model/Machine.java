@@ -32,8 +32,6 @@ public class Machine {
 
     private Long createdById;
 
-
-
     public Long getCreatedById() {
         return createdById;
     }

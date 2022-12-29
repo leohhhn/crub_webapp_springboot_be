@@ -78,7 +78,7 @@ public class BootstrapData implements CommandLineRunner {
             m.setName("mach".concat(String.valueOf(i)));
             m.setCreatedBy(admin);
             m.setCreatedOn(Date.from(Instant.now()));
-            m.setStatus(MachineStatus.RUNNING);
+            m.setStatus(MachineStatus.STOPPED);
             m.setCreatedById(admin.getUserId());
             this.machineRepository.save(m);
         }

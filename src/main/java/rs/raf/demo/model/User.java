@@ -69,6 +69,10 @@ public class User {
     @JsonIgnore
     List<Machine> machineList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "createdBy")
+    @JsonIgnore
+    List<Error> errorList = new ArrayList<>();
+
     // GETTERS & SETTERS
     public Integer getPm_create() {
         return pm_create;
@@ -184,5 +188,17 @@ public class User {
 
     public void setP_create(Integer perm_create) {
         this.p_create = perm_create;
+    }
+
+    public void setMachineList(List<Machine> machineList) {
+        this.machineList = machineList;
+    }
+
+    public List<Error> getErrorList() {
+        return errorList;
+    }
+
+    public void setErrorList(List<Error> errorList) {
+        this.errorList = errorList;
     }
 }
