@@ -40,6 +40,19 @@ public class MachineController {
         this.userService = userService;
     }
 
+    @GetMapping(value = "/all")
+    public List<Machine> all(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String jwt = auth.split(" ")[1];
+        User sender = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
+        return this.machineService.getAllMachines(sender.getUserId());
+    }
+
+    @PostMapping(value = "/find")
+    public Machine findMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
+        // todo add permissions
+        return this.machineService.findMachine(machineDTO);
+    }
+
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> newMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
@@ -77,14 +90,8 @@ public class MachineController {
         }
     }
 
-    @GetMapping(value = "/all")
-    public List<Machine> all(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
-        String jwt = auth.split(" ")[1];
-        User sender = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
-        return this.machineService.getAllMachines(sender.getUserId());
-    }
 
-    @PostMapping(value = "startMachine")
+    @PostMapping(value = "start")
     public ResponseEntity<?> startMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
         Claims perm = jwtUtil.extractAllClaims(jwt);
@@ -99,7 +106,7 @@ public class MachineController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "stopMachine")
+    @PostMapping(value = "stop")
     public ResponseEntity<?> stopMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
         Claims perm = jwtUtil.extractAllClaims(jwt);
@@ -115,7 +122,7 @@ public class MachineController {
 
     @PostMapping(value = "restartMachine")
     public ResponseEntity<?> restartMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
-        // todo implement
+        // todo implement restarting
         return null;
     }
 

@@ -75,7 +75,6 @@ public class MachineService {
         }
     }
 
-
     @Async
     public void stopMachine(Machine m) {
 
@@ -96,8 +95,8 @@ public class MachineService {
     }
     @Async
     public void restartMachine(Machine m) {
-
         try {
+            // todo reimplement as per specification
             m.setStatus(MachineStatus.REBOOT);
             this.machineRepository.save(m);
 
@@ -113,6 +112,8 @@ public class MachineService {
         }
     }
 
-
+    public Machine findMachine(MachineDTO machineDTO){
+        return this.machineRepository.findMachineByMachineId(machineDTO.getMachineId());
+    }
 
 }
