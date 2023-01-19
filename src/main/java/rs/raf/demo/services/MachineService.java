@@ -26,7 +26,6 @@ public class MachineService {
         this.machineRepository = machineRepository;
     }
 
-
     public void create(MachineDTO machineDTO, User creator) {
         Machine m = new Machine();
 

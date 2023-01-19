@@ -56,10 +56,9 @@ public class MachineController {
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> newMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (perm.get("pm_create").equals(0)) return ResponseEntity.status(403).build();
+            if (jwtUtil.hasPermission(jwt, "pm_create")) return ResponseEntity.status(403).build();
             User creator = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
 
             this.machineService.create(machineDTO, creator);
@@ -74,10 +73,9 @@ public class MachineController {
     @DeleteMapping(value = "/destroy")
     public ResponseEntity<?> destroyMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (perm.get("pm_destroy").equals(0)) return ResponseEntity.status(403).build();
+            if (jwtUtil.hasPermission(jwt, "pm_destroy"))return ResponseEntity.status(403).build();
 
             Machine m = this.machineService.findById(machineDTO.getMachineId());
             if (m == null) return new ResponseEntity<>("Machine doesn't exist", HttpStatus.BAD_REQUEST);
@@ -90,12 +88,11 @@ public class MachineController {
         }
     }
 
-
     @PostMapping(value = "start")
     public ResponseEntity<?> startMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
-        if (perm.get("pm_start").equals(0)) return ResponseEntity.status(403).build();
+
+        if (jwtUtil.hasPermission(jwt, "pm_start")) return ResponseEntity.status(403).build();
         // todo add locks
 
         Machine m = this.machineService.findById(machineDTO.getMachineId());
@@ -110,7 +107,7 @@ public class MachineController {
     public ResponseEntity<?> stopMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
         Claims perm = jwtUtil.extractAllClaims(jwt);
-        if (perm.get("pm_stop").equals(0)) return ResponseEntity.status(403).build();
+        if (jwtUtil.hasPermission(jwt, "pm_stop")) return ResponseEntity.status(403).build();
 
         Machine m = this.machineService.findById(machineDTO.getMachineId());
         if (m.getStatus() != MachineStatus.RUNNING)

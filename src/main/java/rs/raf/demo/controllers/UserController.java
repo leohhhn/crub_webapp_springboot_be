@@ -34,10 +34,9 @@ public class UserController {
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> newUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @Valid @RequestBody User user) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (perm.get("p_create").equals(0)) return ResponseEntity.status(403).build();
+            if (jwtUtil.hasPermission(jwt, "p_create")) return ResponseEntity.status(403).build();
             this.userService.create(user);
             return ResponseEntity.ok().build();
         } catch (DataIntegrityViolationException e) {
@@ -54,10 +53,9 @@ public class UserController {
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody UserDTO dto) {
         String jwt = auth.split(" ")[1];
-        Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (perm.get("p_update").equals(0)) return ResponseEntity.status(403).build();
+            if (jwtUtil.hasPermission(jwt, "p_update")) return ResponseEntity.status(403).build();
 
             User u = this.userService.findById(dto.getUserId()); // get user
             if (u == null) return new ResponseEntity<>("User with specified ID does not exist", HttpStatus.BAD_REQUEST);
@@ -83,7 +81,7 @@ public class UserController {
         Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (perm.get("p_delete").equals(0)) return ResponseEntity.status(403).build();
+            if (jwtUtil.hasPermission(jwt, "p_delete")) return ResponseEntity.status(403).build();
 
             if (jwtUtil.extractUsername(jwt).equals(dto.getUsername()))
                 return new ResponseEntity<>("Cannot remove yourself!", HttpStatus.BAD_REQUEST);

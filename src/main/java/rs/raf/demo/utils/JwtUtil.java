@@ -21,12 +21,18 @@ public class JwtUtil {
     public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
+
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
     public boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    public boolean hasPermission(String jwt, String permission) {
+        Claims perm = this.extractAllClaims(jwt);
+        return !perm.get(permission).equals(0);
     }
 
     public String generateToken(String username,
