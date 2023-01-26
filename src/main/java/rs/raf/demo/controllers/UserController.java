@@ -36,7 +36,7 @@ public class UserController {
         String jwt = auth.split(" ")[1];
 
         try {
-            if (jwtUtil.hasPermission(jwt, "p_create")) return ResponseEntity.status(403).build();
+            if (!jwtUtil.hasPermission(jwt, "p_create")) return ResponseEntity.status(403).build();
             this.userService.create(user);
             return ResponseEntity.ok().build();
         } catch (DataIntegrityViolationException e) {
@@ -55,7 +55,7 @@ public class UserController {
         String jwt = auth.split(" ")[1];
 
         try {
-            if (jwtUtil.hasPermission(jwt, "p_update")) return ResponseEntity.status(403).build();
+            if (!jwtUtil.hasPermission(jwt, "p_update")) return ResponseEntity.status(403).build();
 
             User u = this.userService.findById(dto.getUserId()); // get user
             if (u == null) return new ResponseEntity<>("User with specified ID does not exist", HttpStatus.BAD_REQUEST);
@@ -81,12 +81,11 @@ public class UserController {
         Claims perm = jwtUtil.extractAllClaims(jwt);
 
         try {
-            if (jwtUtil.hasPermission(jwt, "p_delete")) return ResponseEntity.status(403).build();
+            if (!jwtUtil.hasPermission(jwt, "p_delete")) return ResponseEntity.status(403).build();
 
             if (jwtUtil.extractUsername(jwt).equals(dto.getUsername()))
                 return new ResponseEntity<>("Cannot remove yourself!", HttpStatus.BAD_REQUEST);
 
-            // todo see if can be implemented better: only checks ID from DTO, could be trouble
             User u = this.userService.findById(dto.getUserId()); // get user
             if (u == null) return new ResponseEntity<>("User with specified ID does not exist", HttpStatus.BAD_REQUEST);
 
@@ -98,8 +97,6 @@ public class UserController {
         }
     }
 
-    /// Returns machines that the currently logged in user created
-    /// todo update it to fetch macines by userId requestparam?
     @GetMapping(value = "/getMachines")
     public List<Machine> allMachines(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         String jwt = auth.split(" ")[1];
@@ -112,6 +109,7 @@ public class UserController {
         }
     }
 
+    /// Returns machines that the currently logged in user created
 //    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public User me() {
 //        String username = SecurityContextHolder.getContext().getAuthentication().getName();

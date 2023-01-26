@@ -17,6 +17,7 @@ public class Machine {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MachineStatus status = MachineStatus.RUNNING;
 
     @ManyToOne
@@ -29,6 +30,10 @@ public class Machine {
 
     @Column(nullable = false)
     Date createdOn;
+
+    @Column
+    @Version
+    private Integer version =0;
 
     private Long createdById;
 

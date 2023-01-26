@@ -17,11 +17,13 @@ public class BootstrapData implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MachineRepository machineRepository;
+    private final ErrRepository errRepository;
 
     @Autowired
-    public BootstrapData(UserRepository userRepository, MachineRepository machineRepository, PasswordEncoder passwordEncoder, MachineRepository machineRepository1) {
+    public BootstrapData(UserRepository userRepository, ErrRepository errRepository, MachineRepository machineRepository, PasswordEncoder passwordEncoder, MachineRepository machineRepository1) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.errRepository = errRepository;
         this.machineRepository = machineRepository1;
     }
 
@@ -82,6 +84,18 @@ public class BootstrapData implements CommandLineRunner {
             m.setCreatedById(admin.getUserId());
             this.machineRepository.save(m);
         }
+
+        Err e = new Err();
+        e.setMessage("test error");
+        e.setCreatedOn(new Date());
+        e.setCreatedBy(admin);
+        this.errRepository.save(e);
+
+        Err e1 = new Err();
+        e1.setMessage("test1 error");
+        e1.setCreatedOn(new Date());
+        e1.setCreatedBy(mod);
+        this.errRepository.save(e1);
 
         System.out.println("Data loaded!");
     }

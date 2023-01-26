@@ -6,7 +6,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Error {
+@Table(name = "Errs")
+public class Err {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,14 +15,11 @@ public class Error {
 
     @Column(nullable = false)
     private String message;
-
     @Column(nullable = false)
     Date createdOn;
-
     @ManyToOne
     @JsonIgnore
     private User createdBy;
-
 
     public Long getErrorId() {
         return errorId;

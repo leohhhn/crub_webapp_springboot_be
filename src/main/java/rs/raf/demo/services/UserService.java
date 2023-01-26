@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
     public void loggedIn(String username) {
         User user = this.userRepository.findByUsername(username);
         try {
-            this.userRepository.save(user); // todo figure out why save when login? could be locking
+            this.userRepository.save(user);
         } catch (ObjectOptimisticLockingFailureException exception) {
             this.loggedIn(username);
         }

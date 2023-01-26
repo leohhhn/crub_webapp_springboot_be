@@ -32,7 +32,7 @@ public class JwtUtil {
 
     public boolean hasPermission(String jwt, String permission) {
         Claims perm = this.extractAllClaims(jwt);
-        return !perm.get(permission).equals(0);
+        return perm.get(permission).equals(1);
     }
 
     public String generateToken(String username,
