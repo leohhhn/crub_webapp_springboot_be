@@ -157,6 +157,10 @@ public class MachineService {
         return this.machineRepository.findMachineByMachineId(machineDTO.getMachineId());
     }
 
+    public boolean checkIfMachineIsUsers(Machine m, User u) {
+        return this.getAllMachines(u.getUserId()).contains(m);
+    }
+
     public List<Machine> searchMachines(SearchMachineDTO searchMachineDTO, User u) {
         List<Machine> machines = this.getAllMachines(u.getUserId());
 

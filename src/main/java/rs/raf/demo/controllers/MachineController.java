@@ -60,12 +60,11 @@ public class MachineController {
         String jwt = auth.split(" ")[1];
 
         try {
+            User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
             if (!jwtUtil.hasPermission(jwt, "pm_create")) return ResponseEntity.status(403).build();
-            User creator = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
 
-            this.machineService.create(machineDTO, creator);
+            this.machineService.create(machineDTO, caller);
             return ResponseEntity.ok().build();
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("MACHINE CONTROLLER:: CREATE FAILED", HttpStatus.BAD_REQUEST);
@@ -78,8 +77,10 @@ public class MachineController {
 
         try {
             if (!jwtUtil.hasPermission(jwt, "pm_destroy")) return ResponseEntity.status(403).build();
-
+            User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
             Machine m = this.machineService.findById(machineDTO.getMachineId());
+
+            if (!this.machineService.checkIfMachineIsUsers(m, caller)) return ResponseEntity.status(403).build();
             if (m == null) return new ResponseEntity<>("Machine doesn't exist", HttpStatus.BAD_REQUEST);
 
             this.machineService.delete(m);
@@ -93,10 +94,12 @@ public class MachineController {
     @PostMapping(value = "start")
     public ResponseEntity<?> startMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
+        Machine m = this.machineService.findById(machineDTO.getMachineId());
 
         if (!jwtUtil.hasPermission(jwt, "pm_start")) return ResponseEntity.status(403).build();
+        User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
+        if (!this.machineService.checkIfMachineIsUsers(m, caller)) return ResponseEntity.status(403).build();
 
-        Machine m = this.machineService.findById(machineDTO.getMachineId());
         if (m.getStatus() != MachineStatus.STOPPED)
             return new ResponseEntity<>("MACHINE CONTROLLER::STARTMACHINE: MACHINE ALREADY BOOTING", HttpStatus.BAD_REQUEST);
 
@@ -107,9 +110,13 @@ public class MachineController {
     @PostMapping(value = "stop")
     public ResponseEntity<?> stopMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
-        if (!jwtUtil.hasPermission(jwt, "pm_stop")) return ResponseEntity.status(403).build();
 
+        User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
         Machine m = this.machineService.findById(machineDTO.getMachineId());
+
+        if (!jwtUtil.hasPermission(jwt, "pm_stop")) return ResponseEntity.status(403).build();
+        if (!this.machineService.checkIfMachineIsUsers(m, caller)) return ResponseEntity.status(403).build();
+
         if (m.getStatus() != MachineStatus.RUNNING) {
             return new ResponseEntity<>("MACHINE CONTROLLER::STOPMACHINE: Machine must be running to stop", HttpStatus.BAD_REQUEST);
         }
@@ -121,10 +128,12 @@ public class MachineController {
     @PostMapping(value = "restart")
     public ResponseEntity<?> restartMachine(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody MachineDTO machineDTO) {
         String jwt = auth.split(" ")[1];
+        User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
+        Machine m = this.machineService.findById(machineDTO.getMachineId());
 
         if (!jwtUtil.hasPermission(jwt, "pm_restart")) return ResponseEntity.status(403).build();
+        if (!this.machineService.checkIfMachineIsUsers(m, caller)) return ResponseEntity.status(403).build();
 
-        Machine m = this.machineService.findById(machineDTO.getMachineId());
         if (m.getStatus() != MachineStatus.RUNNING)
             return new ResponseEntity<>("MACHINE CONTROLLER::RESTART MACHINE: MACHINE NOT RUNNING", HttpStatus.BAD_REQUEST);
 
@@ -150,8 +159,9 @@ public class MachineController {
         String jwt = auth.split(" ")[1];
         User caller = this.userService.findByUsername(jwtUtil.extractUsername(jwt));
         Machine m = this.machineService.findById(scheduleRequest.getMachineId());
-
         System.out.println(m);
+
+        if (!this.machineService.checkIfMachineIsUsers(m, caller)) return ResponseEntity.status(403).build();
 
         switch (scheduleRequest.getAction()) {
             case "start":
